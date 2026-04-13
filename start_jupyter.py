@@ -26,10 +26,12 @@ models_vol = modal.Volume.from_name("models-cache-vol", create_if_missing=True)
 
 my_image = (
     modal.Image.debian_slim()
+    .run_commands(
+        "pip install --index-url https://download.pytorch.org/whl/cu128 torch torchvision torchaudio"
+    )
     .pip_install(
         "uv",
         "jupyterlab",
-        "torch",
         "transformer_lens",
         "sae_lens", # Added since you use it in imports
         "accelerate",
