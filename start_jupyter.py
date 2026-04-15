@@ -6,8 +6,12 @@
 # `modal volume rm -r datasets-vol /datasets`
 # `modal volume put datasets-vol .\datasets /`
 
+# TO sync local code for remote imports:
+# `modal volume rm -r code-vol /`
+# `modal volume put code-vol .\surrogate_sv /surrogate_sv`
+# `modal volume put code-vol .\main_analysis_notebook.ipynb /main_analysis_notebook.ipynb`
+
 import modal
-import time
 import secrets
 from pathlib import Path
 
@@ -21,6 +25,7 @@ datasets_vol = modal.Volume.from_name("datasets-vol", create_if_missing=True)
 
 # This will store your models and SAE weights permanently
 models_vol = modal.Volume.from_name("models-cache-vol", create_if_missing=True)
+code_vol = modal.Volume.from_name("code-vol", create_if_missing=True)
 
 
 
@@ -60,6 +65,7 @@ def main():
         "--ip=0.0.0.0",
         "--port=8888",
         "--allow-root",
+        "--ServerApp.root_dir=/workspace",
         f"--ServerApp.token={token}",
         "--ServerApp.disable_check_xsrf=True",
         "--ServerApp.allow_origin='*'",
@@ -67,6 +73,7 @@ def main():
         volumes={
             "/root/datasets": datasets_vol,
             "/root/cache": models_vol,
+            "/workspace": code_vol,
         },
         gpu="A100-80GB",  # CHANGE THIS TO PREFERRED to "T4" if you want to save credits
         encrypted_ports=[8888],
@@ -74,7 +81,7 @@ def main():
         app=app,
         secrets=[
             dotenv_secret,
-            modal.Secret.from_dict({"HF_HOME": "/root/cache"})
+            modal.Secret.from_dict({"HF_HOME": "/root/cache", "PYTHONPATH": "/workspace"})
             ],  # injects .env keys as env vars
     )
 
@@ -83,6 +90,7 @@ def main():
     print(f"\n✅ SUCCESS! Your GPU Server is ready.")
     print(f"🔗 COPY THIS URL into VS Code 'Existing Jupyter Server':")
     print(f"{tunnel_url}/lab?token={token}\n")
+    print("📦 Code path mounted at /workspace (from Modal volume: code-vol)")
     
     # 4. Keep it running until you stop it
     try:
