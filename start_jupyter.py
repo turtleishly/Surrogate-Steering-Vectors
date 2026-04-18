@@ -7,9 +7,10 @@
 # `modal volume put datasets-vol .\datasets /`
 
 # TO sync local code for remote imports:
-# `modal volume rm -r code-vol /`
-# `modal volume put code-vol .\surrogate_sv /surrogate_sv`
-# `modal volume put code-vol .\main_analysis_notebook.ipynb /main_analysis_notebook.ipynb`
+'''
+modal volume rm -r code-vol /surrogate_sv
+modal volume put code-vol .\surrogate_sv /surrogate_sv
+'''
 
 import modal
 import secrets

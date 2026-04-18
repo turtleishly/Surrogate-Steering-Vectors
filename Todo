@@ -2,7 +2,7 @@
 3) Try evlauating on different attacks (Create a split where one of the attack subtypes aren't used for training)
 1) The training does not have prefill
 2) Try with different layers, with prefill/wo
-4) Try training on general dir
+4) Try doing difference-in-means
 
 Prrrooobably a better sysprompt can be got?
 ```
