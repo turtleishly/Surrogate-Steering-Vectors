@@ -12,3 +12,5 @@ __pycache__/
 # Large/generated project data
 datasets/
 artifacts/
+
+Surrogate Steering Vectors.ipynb
